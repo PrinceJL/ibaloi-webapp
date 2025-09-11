@@ -1,75 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Web UI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ibaloi Sentence Builder</title>
+  <link rel="stylesheet" href="style.css">
 </head>
+<body>
+  <h1>Ibaloi Translation Game</h1>
+  <div id="game-container">
+    <h2>Pick your main word</h2>
+    <div class="word-list" id="word-list"></div>
 
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
-
-    <!-- Top Bar -->
-    <div id="top-bar" class="w-full flex justify-start mb-6">
-        <button id="modal-btn-open"
-            class="px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition">
-            Input Translation
-        </button>
+    <div class="picker">
+      <label>Add extra words (max 2):</label>
+      <input type="text" id="extra1" placeholder="Extra word 1">
+      <input type="text" id="extra2" placeholder="Extra word 2">
     </div>
 
-    <!-- Table Container -->
-    <div id="table-container" class="w-full max-w-2xl bg-white rounded-2xl shadow p-4">
-        <table id="data-table" class="w-full border-collapse">
-            <thead>
-                <tr class="bg-gray-200 text-left">
-                    <th id="table-header-col-1" class="p-3 rounded-l-lg">Column 1</th>
-                    <th id="table-header-col-2" class="p-3 rounded-r-lg">Column 2</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Default -->
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 border-t">Row 1 Data 1</td>
-                    <td class="p-3 border-t">Row 1 Data 2</td>
-                </tr>
-                <tr class="hover:bg-gray-50">
-                    <td class="p-3 border-t">Row 2 Data 1</td>
-                    <td class="p-3 border-t">Row 2 Data 2</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <div id="sentences"></div>
+    <button id="add-btn" onclick="addSentencePair()"> + Add Another Sentence</button>
+    <br><br>
+    <button onclick="submitSentences()">Submit Sentences</button>
+    <div id="status"></div>
+  </div>
 
-    <!-- Modal Overlay -->
-    <div id="modal-overlay"
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
-        <!-- Modal Box -->
-        <div id="modal-box" class="bg-white rounded-xl shadow-lg p-6 relative">
-
-            <!-- Floating Close Button -->
-            <button id="modal-btn-close"
-                class="absolute -top-4 -right-4 bg-red-500 hover:bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-md">
-                ✕
-            </button>
-
-            <!-- Modal Content -->
-            <h2 class="text-lg font-semibold text-left mb-4">Enter Data</h2>
-            <h3 id="modal-prompt" class="text-lg text-left mb-2">Translation promt Here.</h2>
-            <div class="flex gap-2">
-                <input id="modal-input" type="text" placeholder="Input Translation"
-                    class="flex-1 min-w-0 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-                <button id="modal-btn-submit" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                    Submit
-                </button>
-            </div>
-        </div>
-    </div>
-
-
-
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
-
 </html>
