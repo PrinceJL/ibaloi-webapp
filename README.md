@@ -1,144 +1,72 @@
-# Translation API
+# Ibaloi Translation Webapp
 
-A Google Apps Script-based API for managing sentence translations with automatic wordlist generation.
+A simple web application for contributing sentence translations with automatic wordlist generation.
+Built with HTML, CSS, and JavaScript frontend, a Node.js proxy backend, and a Google Sheets-powered API.
 
-## 📋 Overview
+## Overview
 
-This API provides endpoints to fetch untranslated sentences and save translations back to a Google Sheets database. It automatically generates CSV wordlists from translations and includes basic rate limiting.
+This webapp allows users to:
 
-## 🚀 Features
+- Fetch random Ibaloi words that need translation
+- Provide translations directly through the site
+- Automatically generate wordlists from each translation
+- Save data into a shared Google Sheets database via Google Apps Script
 
-- **Fetch untranslated sentences** - Get random sentences that need translation
-- **Save translations** - Store translations with automatic wordlist generation
-- **Rate limiting** - Built-in protection (5 requests per minute per client)
-- **Google Sheets integration** - Data stored in spreadsheet format
+It is designed as a lightweight, community-friendly tool for collaborative translation work.
 
-## 📊 Data Structure
+## Tech Stack
 
-The API expects a Google Sheets document with a "SentenceList" sheet containing:
+- Frontend: HTML, CSS, JavaScript (vanilla)
+- Backend Proxy: Node.js, Express, node-fetch
+- Database: Google Sheets (via Apps Script API)
+- Deployment: Local or server-hosted (frontend can run on any static web server)
 
-| Column A | Column B | Column C |
-|----------|----------|----------|
-| English | WordList | Translation |
+## Data Flow
 
-## 🔗 API Endpoint
+1. User opens the site and requests words.
+2. Frontend calls the local proxy backend (`http://localhost:3000/api`).
+3. Proxy forwards the request to the Google Apps Script Web App.
+4. Google Apps Script fetches data from Google Sheets and returns it.
+5. User submits a translation; the flow repeats in reverse.
 
-```
-https://script.google.com/macros/s/AKfycbwDsmJEmfVwHGwNWSGEzOB-CMC2Bv1tCXntSJEhe8m1wyFWM7j5IhpwUfksKst0_6Vftw/exec
-```
+## Usage
 
-## 📖 API Reference
+1. Start the Proxy
 
-### GET - Fetch Untranslated Sentences
+   ```bash
+   node proxy.js
+   ```
 
-Retrieves random sentences that have no wordlist and no translation.
+   Runs at: `http://localhost:3000/api`
 
-**Parameters:**
-- `count` (optional): Number of sentences to return (default: 1)
+2. Open the Frontend
 
-**Example:**
-```bash
-GET ?count=5
-```
+   Open `index.html` in your browser (using Live Server or double-click).
 
-**Response:**
-```json
-[
-  {
-    "english": "The sun rises in the east.",
-    "wordlist": "",
-    "translation": ""
-  }
-]
-```
+3. Actions in Site
 
-**Error Responses:**
-```json
-{ "error": "No data available" }
-{ "message": "No untranslated sentences left" }
-```
+   - Get Words: fetches random Ibaloi sentences that are not overused
+   - Click a main word that you would use.
+   - Submit Translation: saves translation and generates wordlist
 
-### POST - Save Translation
+## Setup
 
-Saves a translation and generates a CSV wordlist.
+1. Clone this repository.
+2. Install dependencies for the proxy:
 
-**Request Body:**
-```json
-{
-  "english": "The sun rises in the east.",
-  "translation": "Le soleil se lève à l'est."
-}
-```
+   ```bash
+   npm install
+   ```
 
-**Response:**
-```json
-{
-  "status": "saved",
-  "english": "The sun rises in the east.",
-  "wordlist": "Le,soleil,se,lève,à,l'est.",
-  "translation": "Le soleil se lève à l'est."
-}
-```
+3. Configure the Google Apps Script web app and update `GAS_URL` in `proxy.js`.
+4. Start the proxy:
 
-**Rate Limit Response:**
-```json
-{ "error": "Rate limit exceeded. Try again later." }
-```
+   ```bash
+   node proxy.js
+   ```
 
-## 🛠️ Setup
-
-1. Create a Google Sheets document with a "SentenceList" sheet
-2. Set up the column structure (English | WordList | Translation)
-3. Deploy the Google Apps Script as a web app
-4. Configure permissions for external access
-
-## ⚡ Usage Examples
-
-### JavaScript/Fetch
-```javascript
-// Get 3 untranslated sentences
-fetch('YOUR_SCRIPT_URL?count=3')
-  .then(response => response.json())
-  .then(data => console.log(data));
-
-// Save a translation
-fetch('YOUR_SCRIPT_URL', {
-  method: 'POST',
-  body: JSON.stringify({
-    english: "Hello world",
-    translation: "Hola mundo"
-  })
-})
-.then(response => response.json())
-.then(data => console.log(data));
-```
-
-### cURL
-```bash
-# Get sentences
-curl "YOUR_SCRIPT_URL?count=2"
-
-# Save translation
-curl -X POST YOUR_SCRIPT_URL \
-  -H "Content-Type: application/json" \
-  -d '{"english":"Hello","translation":"Hola"}'
-```
-
-## Rate Limiting
-
-- **Limit:** 5 requests per minute per client
-- **Identification:** Based on client address and request type
-- **Reset:** Automatic after 60 seconds
-
-## Architecture
-
-The system consists of:
-- **Google Apps Script** - Server-side logic and API endpoints
-- **Google Sheets** - Data storage and management
-- **Cache Service** - Rate limiting implementation
+5. Open `index.html` and start translating.
 
 ## Notes
 
-- Wordlists are automatically generated by splitting translations on whitespace
-- Empty or whitespace-only wordlists and translations are considered "incomplete"
-- The API returns random sentences to ensure variety in translation tasks
+- The site does not call Google Apps Script directly

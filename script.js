@@ -1,4 +1,4 @@
-const API_URL = "https://script.google.com/macros/s/AKfycbwDsmJEmfVwHGwNWSGEzOB-CMC2Bv1tCXntSJEhe8m1wyFWM7j5IhpwUfksKst0_6Vftw/exec";
+const API_URL = "http://localhost:3000/api";
 let words = [];
 let selectedWord = null;
 
@@ -71,11 +71,18 @@ async function submitSentences() {
   const englishInputs = document.querySelectorAll(".english");
 
   let entries = [];
+  let allWordsUsed = new Set(); // collect words across all sentences
+
   for (let i = 0; i < ibaloiInputs.length; i++) {
     let ib = ibaloiInputs[i].value.trim();
     let en = englishInputs[i].value.trim();
     if (ib && en) {
       entries.push({ ibaloi: ib, english: en });
+
+      // break ibaloi sentence into words and add to set
+      ib.split(/\s+/).forEach(w => {
+        if (w) allWordsUsed.add(w.toLowerCase());
+      });
     }
   }
 
@@ -84,23 +91,27 @@ async function submitSentences() {
     return;
   }
 
-  // collect words
-  let wordsUsed = [selectedWord.word];
+  // Always include the selected word
+  allWordsUsed.add(selectedWord.word.toLowerCase());
+
+  // Add extra words if typed
   let extra1 = document.getElementById("extra1").value.trim();
   let extra2 = document.getElementById("extra2").value.trim();
-  if (extra1) wordsUsed.push(extra1);
-  if (extra2) wordsUsed.push(extra2);
+  if (extra1) allWordsUsed.add(extra1.toLowerCase());
+  if (extra2) allWordsUsed.add(extra2.toLowerCase());
 
   for (let entry of entries) {
     const payload = {
       ibaloiTranslation: entry.ibaloi,
-      words: wordsUsed,
+      words: Array.from(allWordsUsed), // now full list
       englishSentence: entry.english,
       user: "web-user"
     };
+    console.log("Submitting:", payload);
     try {
       await fetch(API_URL, {
         method: "POST",
+        headers: { "Content-Type": "application/json" }, // ✅ safer for GAS
         body: JSON.stringify(payload)
       });
     } catch (err) {
@@ -113,6 +124,7 @@ async function submitSentences() {
   document.getElementById("status").textContent = "✅ Sentences saved!";
   fetchWords();
 }
+
 
 // Start
 fetchWords();
