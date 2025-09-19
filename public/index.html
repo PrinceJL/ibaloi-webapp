@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ibaloi Sentence Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Ibaloi Translation Game</h1>
+  <div id="game-container">
+    <h2>Pick your main word</h2>
+    <div class="word-list" id="word-list"></div>
+
+    <div class="picker">
+      <label>Add extra words (max 2):</label>
+      <input type="text" id="extra1" placeholder="Extra word 1">
+      <input type="text" id="extra2" placeholder="Extra word 2">
+    </div>
+
+    <div id="sentences"></div>
+    <button id="add-btn" onclick="addSentencePair()"> + Add Another Sentence</button>
+    <br><br>
+    <button onclick="submitSentences()">Submit Sentences</button>
+    <div id="status"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
