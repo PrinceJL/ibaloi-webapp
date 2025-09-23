@@ -44,8 +44,6 @@ const API_URL = "/api/proxy";  let words = [];
   function resetSentences() {
     document.getElementById("sentences").innerHTML = "";
     addSentencePair();
-    document.getElementById("extra1").value = "";
-    document.getElementById("extra2").value = "";
     document.getElementById("status").textContent = "";
   }
 
@@ -92,12 +90,7 @@ const API_URL = "/api/proxy";  let words = [];
 
     // Always include the selected word
     allWordsUsed.add(selectedWord.word.toLowerCase());
-
-    // Add extra words if typed
-    let extra1 = document.getElementById("extra1").value.trim();
-    let extra2 = document.getElementById("extra2").value.trim();
-    if (extra1) allWordsUsed.add(extra1.toLowerCase());
-    if (extra2) allWordsUsed.add(extra2.toLowerCase());
+    document.getElementById("status").textContent = "Submitting...";
 
     for (let entry of entries) {
       const payload = {
@@ -110,7 +103,7 @@ const API_URL = "/api/proxy";  let words = [];
       try {
         await fetch(API_URL, {
           method: "POST",
-          headers: { "Content-Type": "application/json" }, // ✅ safer for GAS
+          headers: { "Content-Type": "application/json" }, 
           body: JSON.stringify(payload)
         });
       } catch (err) {
@@ -120,7 +113,7 @@ const API_URL = "/api/proxy";  let words = [];
       }
     }
 
-    document.getElementById("status").textContent = "✅ Sentences saved!";
+    document.getElementById("status").textContent = "Sentences saved!";
     fetchWords();
   }
 
